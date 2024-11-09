@@ -1,59 +1,74 @@
-import { useState } from "react";
+import React, { useEffect, useState } from "react";
 
 const App = () => {
-  const initialStudent = {
-    name: "",
-    age: "",
-    class: "",
-    job: '',
+  const [users, setUsers] = useState([]);
+
+  // Fetch user data
+  const fetchUserData = async () => {
+    const url = "https://jsonplaceholder.typicode.com/users";
+
+    try {
+      const response = await fetch(url);
+
+      if (!response.ok) {
+        console.log("Error nih");
+      }
+
+      const responseData = await response.json();
+      setUsers(responseData);
+    } catch (error) {
+      console.log(error);
+    }
   };
 
-  const [student, setStudent] = useState(initialStudent);
+  console.log(users);
 
-  const handleChangedStudent = (event, field) => {
-    setStudent((previous) => ({
-      ...previous,
-      [field]: event.target.value,
-    }));
-  };
-
-  console.log(student)
+  useEffect(() => {
+    fetchUserData();
+  }, []);
 
   return (
-    <>
-      {/* Data Student */}
-      <div>
-        <h1>Data Student</h1>
-        <p>Name: {student.name}</p>
-        <p>Age: {student.age}</p>
-        <p>Class: {student.class}</p>
-        <p>Job: {student.job}</p>
-      </div>
+    <div
+      style={{
+        display: "flex",
+        flexWrap: "wrap",
+        gap: "20px",
+      }}
+    >
+      {/* {users.map((data, index) => (
+        <div
+          key={data?.id}
+          style={{
+            background: "#e1bbbb",
+            padding: "24px",
+          }}
+        >
+          <p>Data ke -{index + 1}</p>
+          <p>Name :{data?.name}</p>
+          <p>Age :{data?.email}</p>
+        </div>
+      ))} */}
 
-      {/* Inputs */}
-      <div>
-        {/* Name */}
-        <div>
-          <label htmlFor="name">Name</label>
-          <input type="text" name="name" id="name" onChange={(event) => handleChangedStudent(event, 'name')} />
-        </div>
-        {/* Age */}
-        <div>
-          <label htmlFor="age">Age</label>
-          <input type="number" name="age" id="age" onChange={(event) => handleChangedStudent(event, 'age')} />
-        </div>
-        {/* Class */}
-        <div>
-          <label htmlFor="class">Class</label>
-          <input type="text" name="class" id="class" onChange={(event) => handleChangedStudent(event, 'class')} />
-        </div>
+      {users.map((user, index) => {
+        // 
+        const indexing = index + 1;
 
-        <div>
-          <label htmlFor="job">Job</label>
-          <input type="text" name="job" id="job" onChange={(event) => handleChangedStudent(event, 'job')} />
-        </div>
-      </div>
-    </>
+        return (
+          <div
+            key={user?.id}
+            style={{
+              background: "#e1bbbb",
+              padding: "24px",
+            }}
+          >
+            <p>Data ke -{indexing}</p>
+            <p>Name :{user?.name}</p>
+            <p>Age :{user?.email}</p>
+            <p>Latitude :{user?.address?.geo?.lat}</p>
+          </div>
+        );
+      })}
+    </div>
   );
 };
 
